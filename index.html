@@ -66,6 +66,8 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid c
 .field input{padding-inline-start:42px}
 .field .eye{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;padding:8px}
 .login-foot{font-size:.78rem;color:rgba(255,255,255,.55);text-align:center}
+.credit{display:block;margin-top:6px;font-size:.74rem;letter-spacing:.02em;opacity:.85}
+.login-foot .credit{color:var(--sand)}
 .msg{min-height:1.4em;color:var(--bad);font-size:.88rem;margin:10px 0 0}
 #loading{justify-content:center;align-items:center;gap:28px}
 #loading .login-brand img{width:130px}
@@ -297,7 +299,7 @@ main.no-tabs{padding-bottom:24px}
       <button id="btnLogin" class="btn" data-i18n="signIn"></button>
       <p id="loginMsg" class="msg" role="alert"></p>
     </div>
-    <p class="login-foot" data-i18n="tagline"></p>
+    <p class="login-foot"><span data-i18n="tagline"></span><span class="credit" dir="ltr">Created by Eng. Beshoy Attia</span></p>
   </div>
 </div>
 
@@ -933,7 +935,7 @@ function renderMe() {
       <button id="btnRefresh">${esc(t('refresh'))}<span>↻</span></button>
       <button class="danger" id="btnLogout">${esc(t('signOut'))}</button>
     </div>
-    <p class="foot">CareHub Sales Visits</p>`;
+    <p class="foot">CareHub Sales Visits<span class="credit" dir="ltr">Created by Eng. Beshoy Attia</span></p>`;
 }
 
 /* ---------------- VISIT FORM ---------------- */
