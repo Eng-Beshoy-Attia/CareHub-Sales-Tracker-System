@@ -172,6 +172,12 @@ main.no-tabs{padding-bottom:24px}
 .linkbtn{display:block;margin:10px auto 0;background:none;border:0;color:var(--navy);text-decoration:underline;font-weight:600;cursor:pointer;padding:6px}
 .help{margin:6px 0 14px;padding-inline-start:20px;font-size:.9rem}.help li{margin:6px 0}
 .sheet h4{margin:16px 0 4px;font-size:.95rem}
+.gapnote{display:flex;align-items:center;gap:10px;background:var(--sand-soft);border:1px solid #EBC98A;color:var(--sand-ink);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:10px;font-size:.88rem;font-weight:600}
+.gapnote::before{content:"⏱";font-size:1.1rem}
+.placebox{display:flex;gap:10px;align-items:flex-start;background:color-mix(in srgb,var(--accent) 7%,var(--surface));border:1.5px dashed color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:var(--r-sm);padding:12px;font-size:.92rem}
+.placebox svg{width:20px;height:20px;color:var(--accent);flex:none;margin-top:2px}
+.placebox b{display:block}
+.placebox.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 6%,var(--surface))}
 /* ============ DASHBOARD ============ */
 .filters{display:grid;gap:10px}
 .chiprow{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
@@ -335,10 +341,10 @@ main.no-tabs{padding-bottom:24px}
         </div>
         <div id="boxNew" hidden>
           <label for="nName" class="req" id="nNameLbl"></label><input id="nName">
-          <div class="row2">
-            <div><label for="nCat" class="req" id="nCatLbl"></label><select id="nCat"></select></div>
-            <div><label for="nArea" class="req" data-i18n="area"></label><select id="nArea"></select></div>
-          </div>
+          <label for="nCat" class="req" id="nCatLbl"></label><select id="nCat"></select>
+          <label data-i18n="detectedPlace"></label>
+          <div class="placebox" id="placeBox"></div>
+          <p class="note" data-i18n="autoArea"></p>
           <label for="nAddress" id="nAddressLbl"></label><input id="nAddress">
           <div class="row2" id="nContactRow">
             <div><label for="nContact" data-i18n="contactName"></label><input id="nContact"></div>
@@ -367,7 +373,7 @@ main.no-tabs{padding-bottom:24px}
         <button class="btn ghost" id="btnGps"></button>
         <button class="linkbtn" id="btnGpsHelp" hidden data-i18n="gHelp"></button>
       </div>
-      <div class="save"><button class="btn accent" id="btnSave" disabled data-i18n="save"></button></div>
+      <div class="save"><div class="gapnote" id="gapNote" hidden></div><button class="btn accent" id="btnSave" disabled data-i18n="save"></button></div>
     </section>
 
     <!-- DONE -->
@@ -589,7 +595,25 @@ Object.assign(T.en, {
   helpI3:'In Safari, tap “aA” in the address bar → Website Settings → Location → Allow.',
   helpI4:'Open the link in Safari itself, not inside WhatsApp, Facebook or Instagram.',
   gLive:'(live, updated {s}s ago)', gLiveOld:'(last update {s}s ago — keep the screen on)', gConfirm:'Checking your location', gConfirmFail:'We couldn’t confirm your current location. Make sure GPS is on and try again.',
-  tagline:'CareHub International Group for Home Hospitals', show:'Show', hide:'Hide', visitsN:'{n} visits', namePh:'Type your name as registered', checking:'Checking', loadingT:'Welcome, {name}', loadingX:'Loading your data…', E_MANAGER_NO_VISITS:'Managers don’t log visits', E_TOO_MANY_ATTEMPTS:'Too many wrong attempts. Try again in {min} minutes',
+  tagline:'CareHub International Group for Home Hospitals',
+  district:'District', autoArea:'You can’t choose the area: it’s read from your GPS location, street by street.',
+  detectedPlace:'Location of this account (detected automatically)', dStreet:'Street',
+  gDetectT:'Detecting your area…', gDetectX:'Finding the street and district you’re in.',
+  gDetectFailT:'Couldn’t detect your area', gDetectFailX:'Check your internet connection and tap “Locate me again”.',
+  E_GEO_FAIL:'We couldn’t detect your area from your location. Check your internet and try again',
+  F_GEO_FAIL:'Area couldn’t be detected', F_AREA_MISMATCH:'Detected area differs from the account’s area',
+  gOutsideDT:'You’re outside {district}', gOutsideDX:'You’re {dist} outside {district}. Move inside it to log this visit.',
+  gNoDistrictT:'Not inside a registered district', gNoDistrictX:'Your location isn’t inside any registered district of {area}.',
+  gapWait:'Next visit allowed at {at} (in {min} min). Visits must be spaced out.',
+  sDistricts:'Top districts', dDistrict:'District', dGap:'Time since previous visit', minAfter:'{n} min',
+  E_OUTSIDE_DISTRICT:'You’re {dist} outside {district}. You must be inside it to log this visit',
+  E_NO_DISTRICT_HERE:'You’re not inside any registered district of {area}', E_UNKNOWN_DISTRICT:'{district} isn’t a registered district of {area}',
+  E_TOO_SOON:'Your last visit was {ago} min ago. Visits must be at least {gap} minutes apart. Next visit allowed at {at}',
+  gOutsideT:'You’re outside {area}', gOutsideX:'You’re {dist} outside the {area} zone. Visits in {area} can only be logged from inside it.',
+  gNoZoneT:'{area} has no GPS zone', gNoZoneX:'Ask your manager to add {area} in the AreaZones sheet.',
+  gNotYourAreaT:'Not your area', gNotYourAreaX:'You’re in {area}, which isn’t one of your assigned areas.', gInArea:'Inside the {area} zone.',
+  E_OUTSIDE_AREA:'You’re {dist} outside the {area} zone. Visits in {area} can only be logged from inside it',
+  E_AREA_NO_ZONE:'{area} has no GPS zone. Ask your manager to add it in the AreaZones sheet', E_NOT_YOUR_AREA:'{area} isn’t one of your assigned areas', F_NO_ZONE:'Area has no GPS zone', show:'Show', hide:'Hide', visitsN:'{n} visits', namePh:'Type your name as registered', checking:'Checking', loadingT:'Welcome, {name}', loadingX:'Loading your data…', E_MANAGER_NO_VISITS:'Managers don’t log visits', E_TOO_MANY_ATTEMPTS:'Too many wrong attempts. Try again in {min} minutes',
   dgSecure:'Secure page (https)', dgPerm:'Location permission', dgInApp:'In-app browser', dgErr:'Last error', yes:'Yes', no:'No'
 });
 Object.assign(T.ar, {
@@ -609,7 +633,25 @@ Object.assign(T.ar, {
   helpI3:'في Safari اضغط "aA" جنب العنوان ← Website Settings ← Location ← Allow.',
   helpI4:'افتح اللينك من Safari نفسه، مش من جوه واتساب أو فيسبوك أو إنستجرام.',
   gLive:'(مباشر، آخر تحديث من {s} ث)', gLiveOld:'(آخر تحديث من {s} ث — خلي الشاشة مفتوحة)', gConfirm:'بنتأكد من موقعك', gConfirmFail:'مقدرناش نتأكد من موقعك دلوقتي. اتأكد إن الـ GPS شغال وجرّب تاني.',
-  tagline:'مجموعة كيرهب العالمية للمستشفيات المنزلية', show:'إظهار', hide:'إخفاء', visitsN:'{n} زيارات', namePh:'اكتب اسمك زي ما هو متسجل', checking:'بنتأكد من البيانات', loadingT:'أهلًا، {name}', loadingX:'بنحمّل بياناتك…', E_MANAGER_NO_VISITS:'المديرين مش بيسجلوا زيارات', E_TOO_MANY_ATTEMPTS:'محاولات غلط كتير. جرّب تاني بعد {min} دقايق',
+  tagline:'مجموعة كيرهب العالمية للمستشفيات المنزلية',
+  district:'الحي / الشارع', autoArea:'مش هتختار المنطقة: بتتحدد من الـ GPS بتاعك بالشارع والحي.',
+  detectedPlace:'مكان الحساب (بيتحدد أوتوماتيك)', dStreet:'الشارع',
+  gDetectT:'بنحدد منطقتك…', gDetectX:'بندوّر على الشارع والحي اللي إنت فيه.',
+  gDetectFailT:'مقدرناش نحدد منطقتك', gDetectFailX:'اتأكد من النت واضغط "حدد موقعي تاني".',
+  E_GEO_FAIL:'مقدرناش نحدد منطقتك من موقعك. اتأكد من النت وجرّب تاني',
+  F_GEO_FAIL:'المنطقة متحددتش', F_AREA_MISMATCH:'المنطقة اللي اتحددت مختلفة عن منطقة الحساب',
+  gOutsideDT:'إنت مش في {district}', gOutsideDX:'إنت بره {district} بمسافة {dist}. لازم تكون جوه الحي عشان الزيارة تتسجل.',
+  gNoDistrictT:'إنت مش جوه حي متسجل', gNoDistrictX:'موقعك مش جوه أي حي متسجل في {area}.',
+  gapWait:'الزيارة الجاية متاحة الساعة {at} (بعد {min} دقيقة). لازم يبقى فيه وقت بين الزيارات.',
+  sDistricts:'أكتر الأحياء', dDistrict:'الحي', dGap:'الوقت من الزيارة اللي قبلها', minAfter:'{n} دقيقة',
+  E_OUTSIDE_DISTRICT:'إنت بره {district} بمسافة {dist}. لازم تكون جوه الحي عشان الزيارة تتسجل',
+  E_NO_DISTRICT_HERE:'إنت مش جوه أي حي متسجل في {area}', E_UNKNOWN_DISTRICT:'{district} مش حي متسجل في {area}',
+  E_TOO_SOON:'آخر زيارة كانت من {ago} دقيقة. لازم يبقى بين الزيارات {gap} دقيقة على الأقل. الزيارة الجاية متاحة الساعة {at}',
+  gOutsideT:'إنت مش في {area}', gOutsideX:'إنت بره منطقة {area} بمسافة {dist}. زيارات {area} لازم تتسجل وإنت جوه المنطقة.',
+  gNoZoneT:'منطقة {area} ملهاش حدود GPS', gNoZoneX:'اطلب من المدير يضيف {area} في شيت AreaZones.',
+  gNotYourAreaT:'دي مش منطقتك', gNotYourAreaX:'إنت في {area}، ودي مش من المناطق المتحددة ليك.', gInArea:'إنت جوه منطقة {area}.',
+  E_OUTSIDE_AREA:'إنت بره منطقة {area} بمسافة {dist}. زيارات {area} لازم تتسجل وإنت جوه المنطقة',
+  E_AREA_NO_ZONE:'منطقة {area} ملهاش حدود GPS. اطلب من المدير يضيفها في شيت AreaZones', E_NOT_YOUR_AREA:'{area} مش من المناطق المتحددة ليك', F_NO_ZONE:'المنطقة ملهاش حدود GPS', show:'إظهار', hide:'إخفاء', visitsN:'{n} زيارات', namePh:'اكتب اسمك زي ما هو متسجل', checking:'بنتأكد من البيانات', loadingT:'أهلًا، {name}', loadingX:'بنحمّل بياناتك…', E_MANAGER_NO_VISITS:'المديرين مش بيسجلوا زيارات', E_TOO_MANY_ATTEMPTS:'محاولات غلط كتير. جرّب تاني بعد {min} دقايق',
   dgSecure:'صفحة آمنة (https)', dgPerm:'إذن الموقع', dgInApp:'متصفح جوه أبلكيشن', dgErr:'آخر خطأ', yes:'أيوه', no:'لأ'
 });
 
@@ -676,11 +718,13 @@ const isManager = () => state.user && state.user.role === 'Manager';
 const listItems = name => (state.lists[name] || []).map(parseItem);
 const chLabel = ch => CH[ch] ? L(CH[ch].label) : ch;
 
+const AR_NAMES = {};
 function labelOfListValue(v) {
   for (const name in state.lists) {
     const hit = listItems(name).find(i => i.v === v);
     if (hit) return lang === 'ar' ? hit.ar : hit.en;
   }
+  if (lang === 'ar' && AR_NAMES[v]) return AR_NAMES[v];
   return lbl(v);
 }
 
@@ -707,6 +751,7 @@ function translateError(j) {
     const p = Object.assign({}, j.params);
     if (p.dist != null) p.dist = fmtDist(p.dist);
     if (p.area) p.area = labelOfListValue(p.area);
+    if (p.district) p.district = distLabel(p.district);
     return t('E_' + j.code, p);
   }
   return j.error || t('genericError');
@@ -745,7 +790,7 @@ function setLang(l) {
     const snap = snapshot();
     setChannel(state.channel, true);
     restore(snap);
-    renderResults(); showPicked(); setMode(state.mode);
+    renderResults(); showPicked(); setMode(state.mode); renderPlaceBox();
   }
   if (state.lastResult) renderDone();
   if (isManager()) { renderDash(); if (D.repName) renderRep(); }
@@ -775,7 +820,7 @@ async function login(name, pin, silent=false) {
     // 2) load this user's data
     showLoading(auth.user.name);
     const j = await api('bootstrap');
-    state.user = j.user; state.lists = j.lists; state.accounts = j.accounts; state.settings = j.settings;
+    state.user = j.user; state.lists = j.lists; state.accounts = j.accounts; state.settings = j.settings; learnNames(j.accounts);
     const mgr = isManager();
     document.querySelectorAll('#tabbar [data-go="home"], #tabbar [data-go="visit"]').forEach(b => b.hidden = mgr);
     $('tabDash').hidden = !mgr;
@@ -843,7 +888,7 @@ function renderBar() {
 /* ---------------- HOME ---------------- */
 async function loadHome() {
   state.homeErr = null; renderHome();
-  try { state.home = await api('myVisits'); }
+  try { state.home = await api('myVisits'); setGapClock(state.home); learnNames(state.home.visits); }
   catch (e) { state.homeErr = e.message; }
   if (state.view === 'home') renderHome();
 }
@@ -860,7 +905,7 @@ function renderHome() {
   else list = `<ol class="timeline">${h.visits.map(v => {
       const col = ST_COLOR[v.status] || 'var(--muted)';
       return `<li><time>${esc(v.time)}</time><span class="tl-dot" style="--c:${col}"></span>
-        <div class="tl-card"><b>${esc(v.account)}</b><span class="sub">${esc(labelOfListValue(v.area))}${v.purpose ? ' – ' + esc(lbl(v.purpose)) : ''}</span><br>
+        <div class="tl-card"><b>${esc(v.account)}</b><span class="sub">${esc(placeLabel(v.area, v.district))}${v.purpose ? ' – ' + esc(lbl(v.purpose)) : ''}</span><br>
         <span class="st-chip" style="--c:${col}">${esc(t('st_' + v.status))}</span></div></li>`;
     }).join('')}</ol>`;
   $('vHome').innerHTML = `
@@ -872,6 +917,7 @@ function renderHome() {
     </div>
     <button class="action" data-go="visit"><span class="ic"><svg><use href="#i-pin"/></svg></span>
       <span><b>${esc(t('logT'))}</b><small>${esc(t('logX'))}</small></span><span class="go flip">›</span></button>
+    ${gapText() ? `<div class="gapnote" style="margin-top:12px">${esc(gapText())}</div>` : ''}
     <div class="sechead"><h2>${esc(t('myToday'))}</h2>${h && h.visits.length ? `<span>${esc(t('visitsN', { n: h.visits.length }))}</span>` : ''}</div>
     ${list}`;
 }
@@ -893,7 +939,8 @@ function renderMe() {
 /* ---------------- VISIT FORM ---------------- */
 function openVisit() {
   const ch = state.user.channel;
-  state.picked = null; state.lastResult = null; state.gpsErr = null;
+  state.picked = null; state.lastResult = null; state.gpsErr = null; state.where = null; state.whereErr = null; geo.at = null; geo.token++;
+  if (!state.home) api('myVisits').then(r => { state.home = r; setGapClock(r); updateSave(); }).catch(() => {});
   ['nName','nAddress','nContact','nRole','nPhone','fSearch'].forEach(id => $(id).value = '');
   $('chTabs').hidden = ch !== 'ALL';
   setChannel(ch === 'ALL' ? (state.channel && CH[state.channel] ? state.channel : 'Medical') : ch);
@@ -920,8 +967,7 @@ function setChannel(ch, keep=false) {
   $('accTitle').textContent = t('whoVisit', { title: L(c.title) });
   $('nNameLbl').textContent = L(c.name); $('nCatLbl').textContent = L(c.cat); $('nAddressLbl').textContent = L(c.address);
   $('nContactRow').hidden = !c.contact;
-  $('fArea').innerHTML = options(listItems('Areas'), 'allAreas');
-  $('nArea').innerHTML = options(listItems('Areas'), 'choose');
+  $('fArea').innerHTML = options(accountAreas(), 'allAreas');
   $('nCat').innerHTML = options(listItems(c.catList), 'choose');
   renderDetails(); renderResults(); updateGpsUI();
 }
@@ -932,6 +978,7 @@ function setMode(m) {
   $('modeNew').setAttribute('aria-pressed', m === 'new');
   $('boxExisting').hidden = m !== 'existing';
   $('boxNew').hidden = m !== 'new';
+  renderPlaceBox();
   updateGpsUI();
 }
 
@@ -953,7 +1000,7 @@ function renderResults() {
   list.sort((x, y) => (x.d ?? 1e12) - (y.d ?? 1e12) || x.a.name.localeCompare(y.a.name));
   if (!list.length) { ul.innerHTML = `<li class="empty">${esc(t('noResults', { title: L(CH[state.channel].title) }))}</li>`; return; }
   ul.innerHTML = list.slice(0, 60).map(({a, d}) => `<li><button data-id="${esc(a.id)}">
-      <span><span>${esc(a.name)}</span><br><span class="meta">${esc(labelOfListValue(a.category))} – ${esc(labelOfListValue(a.area))}</span></span>
+      <span><span>${esc(a.name)}</span><br><span class="meta">${esc(labelOfListValue(a.category))} – ${esc(placeLabel(a.area, a.district))}</span></span>
       <span class="dist" style="color:${d != null && d <= state.settings.maxDistance ? 'var(--ok)' : 'var(--muted)'}">
         ${d == null ? (a.lat == null ? esc(t('noLocation')) : '') : esc(fmtDist(d))}</span>
     </button></li>`).join('');
@@ -964,7 +1011,7 @@ function showPicked() {
   $('picked').hidden = !state.picked;
   if (state.picked) {
     $('pickedName').textContent = state.picked.name;
-    $('pickedMeta').textContent = `${labelOfListValue(state.picked.category)} – ${labelOfListValue(state.picked.area)}`;
+    $('pickedMeta').textContent = `${labelOfListValue(state.picked.category)} – ${placeLabel(state.picked.area, state.picked.district)}`;
   }
 }
 
@@ -1050,6 +1097,7 @@ async function startGPS() {
     // always follow the newest reading, so walking away is detected immediately
     if (!state.pos || fresh.time >= state.pos.time) state.pos = fresh;
     if (gps.waiter) gps.waiter(fresh);
+    if (fresh.accuracy <= state.settings.maxAccuracy) detectPlace();
     clearTimeout(state.gpsTimer);
     updateGpsUI(); renderResults();
   };
@@ -1106,10 +1154,76 @@ function setGps(s, title, text, val='—', fill=0) {
   updateSave();
 }
 
+const normN = s => norm(s).replace(/\s+/g, ' ');
+
+/* ---- detected place (area / district / street come from the GPS point, never typed) ---- */
+function learnNames(list) {
+  (list || []).forEach(o => {
+    if (o.area && o.areaAr) AR_NAMES[o.area] = o.areaAr;
+    const d = o.district ?? o.dis, dAr = o.districtAr ?? o.disAr;
+    if (d && dAr) AR_NAMES[d] = dAr;
+  });
+}
+function distLabel(v) { return v ? (lang === 'ar' && AR_NAMES[v] ? AR_NAMES[v] : v) : ''; }
+const placeLabel = (area, dis) => labelOfListValue(area) + (dis && dis !== area ? ' – ' + distLabel(dis) : '');
+function placeText(w) {
+  if (!w) return '';
+  const ar = lang === 'ar';
+  const parts = [ar ? w.streetAr : w.street, ar ? w.districtAr : w.district, ar ? w.areaAr : w.area, ar ? w.govAr : w.gov].filter(Boolean);
+  return [...new Set(parts)].join(ar ? '، ' : ', ');
+}
+function accountAreas() {
+  const m = new Map();
+  state.accounts.filter(a => a.channel === state.channel && a.area).forEach(a => m.set(a.area, a.areaAr || AR_NAMES[a.area] || a.area));
+  return [...m.entries()].map(([en, ar]) => ({ v: en, en: labelOfListValue(en) === en ? en : labelOfListValue(en), ar })).sort((a, b) => a.en.localeCompare(b.en));
+}
+function territoryOk(w) {
+  const ua = (state.user && state.user.areas) || [];
+  if (!ua.length || !w) return true;
+  const names = [w.area, w.areaAr, w.district, w.districtAr, w.gov, w.govAr].filter(Boolean).map(normN);
+  return ua.some(a => { const x = normN(a); return names.some(n => n === x || n.includes(x) || x.includes(n)); });
+}
+
+const geo = { busy:false, at:null, token:0 };
+async function detectPlace(force) {
+  const p = state.pos; if (!p || geo.busy) return;
+  if (!force && geo.at && state.where && distTo(geo.at) < 80) return;
+  geo.busy = true; state.whereErr = null; renderPlaceBox();
+  const my = ++geo.token, at = { lat:p.lat, lng:p.lng };
+  try {
+    const r = await api('where', { lat: p.lat, lng: p.lng });
+    if (my !== geo.token) return;
+    state.where = r.where; geo.at = at; learnNames([r.where]);
+  } catch (e) { state.whereErr = e.message; }
+  finally { geo.busy = false; renderPlaceBox(); updateGpsUI(); }
+}
+function renderPlaceBox() {
+  const el = $('placeBox'); if (!el) return;
+  el.classList.toggle('bad', !!state.whereErr || (state.where && !territoryOk(state.where)));
+  if (state.where) el.innerHTML = `<svg><use href="#i-pin"/></svg><span><b>${esc(placeText(state.where))}</b></span>`;
+  else if (state.whereErr) el.innerHTML = `<svg><use href="#i-pin"/></svg><span>${esc(state.whereErr)}</span>`;
+  else el.innerHTML = `<span class="spin dark"></span><span>${esc(t('gDetectT'))}</span>`;
+}
+
 function gpsCheck() {
+  const r = gpsCheckBase();
+  if (r.ok && state.where) r.extra = ' 📍 ' + placeText(state.where) + '.';
+  return r;
+}
+
+function gpsCheckBase() {
   const p = state.pos, s = state.settings;
   if (!p) return { ok:false };
   if (p.accuracy > s.maxAccuracy) return { ok:false, s:'warn', tk:'gWeakT', xk:'gWeakX', p:{ acc:p.accuracy, max:s.maxAccuracy } };
+  if (state.where && !territoryOk(state.where)) return { ok:false, s:'bad', tk:'gNotYourAreaT', xk:'gNotYourAreaX', p:{ area: placeText(state.where) } };
+  if (state.mode === 'new' && !state.where) return state.whereErr
+    ? { ok:false, s:'bad', tk:'gDetectFailT', xk:'gDetectFailX' }
+    : { ok:false, s:'busy', tk:'gDetectT', xk:'gDetectX' };
+  return gpsCheckDist();
+}
+
+function gpsCheckDist() {
+  const p = state.pos, s = state.settings;
   if (state.mode === 'existing' && state.picked) {
     const d = distTo(state.picked);
     if (d == null) return { ok:true, s:'ok', tk:'gNoAccLocT', xk:'gNoAccLocX' };
@@ -1134,7 +1248,7 @@ function updateGpsUI() {
   const c = gpsCheck();
   const age = Math.round((Date.now() - state.pos.time) / 1000);
   const live = busy ? ' ' + t(age > 20 ? 'gLiveOld' : 'gLive', { s: age }) : '';
-  setGps(c.s, t(c.tk, c.p), t(c.xk, c.p) + live, val, fill);
+  setGps(c.s, t(c.tk, c.p), t(c.xk, c.p) + (c.extra || '') + live, val, fill);
 }
 
 function openGpsHelp() {
@@ -1156,12 +1270,33 @@ function openGpsHelp() {
 
 /* ---------------- SAVE ---------------- */
 function canSave() {
-  if (state.saving || !state.pos) return false;
+  if (state.saving || !state.pos || gapRemaining() > 0) return false;
   if (!gpsCheck().ok) return false;
   if (state.mode === 'existing') return !!state.picked;
-  return !!($('nName').value.trim() && $('nCat').value && $('nArea').value);
+  return !!($('nName').value.trim() && $('nCat').value && state.where);
 }
-function updateSave() { $('btnSave').disabled = !canSave(); }
+function updateSave() { renderGapNote(); $('btnSave').disabled = !canSave(); }
+
+/* ---- minimum time between visits ---- */
+function setGapClock(r) {
+  if (!r) return;
+  state.clockOffset = (r.serverNow || Date.now()) - Date.now();
+  state.lastVisitAt = r.lastAt || null;
+}
+function gapRemaining() {
+  const gap = Number(state.settings.gapMin) || 0;
+  if (!gap || !state.lastVisitAt) return 0;
+  return Math.max(0, state.lastVisitAt + gap * 60000 - (Date.now() + (state.clockOffset || 0)));
+}
+function nextVisitTime() {
+  const at = new Date(state.lastVisitAt + state.settings.gapMin * 60000 - (state.clockOffset || 0));
+  return new Intl.DateTimeFormat('en-GB', { hour:'2-digit', minute:'2-digit', timeZone: TZ }).format(at);
+}
+function gapText() { const ms = gapRemaining(); return ms ? t('gapWait', { at: nextVisitTime(), min: Math.ceil(ms / 60000) }) : ''; }
+function renderGapNote() {
+  const el = $('gapNote'); if (!el) return;
+  const txt = gapText(); el.hidden = !txt; el.textContent = txt;
+}
 
 async function save() {
   const { details, missing } = collectDetails();
@@ -1181,7 +1316,7 @@ async function save() {
       channel: state.channel,
       accountId: state.mode === 'existing' ? state.picked.id : null,
       newAccount: state.mode === 'new' ? {
-        name: $('nName').value.trim(), category: $('nCat').value, area: $('nArea').value, address: $('nAddress').value.trim(),
+        name: $('nName').value.trim(), category: $('nCat').value, address: $('nAddress').value.trim(),
         contactPerson: $('nContact').value.trim(), contactRole: $('nRole').value.trim(), phone: $('nPhone').value.trim()
       } : null,
       lat: fix.lat, lng: fix.lng, accuracy: fix.accuracy,
@@ -1191,6 +1326,7 @@ async function save() {
     const i = state.accounts.findIndex(a => a.id === j.account.id);
     if (i >= 0) state.accounts[i] = j.account; else state.accounts.push(j.account);
     state.lastResult = j; state.home = null; D.data = null;
+    state.lastVisitAt = Date.now() + (state.clockOffset || 0);
     renderDone();
     go('done');
   } catch (e) {
@@ -1225,7 +1361,7 @@ function periodRange() {
 async function loadDash() {
   const [from, to] = periodRange();
   D.loading = true; D.err = null; renderDash();
-  try { D.data = await api('dashboard', { from, to, channel: D.channel }); }
+  try { D.data = await api('dashboard', { from, to, channel: D.channel }); learnNames(D.data.visits); learnNames(D.data.accounts); }
   catch (e) { D.err = e.message; }
   D.loading = false;
   if (D.data && D.rep && !repNames().includes(D.rep)) D.rep = '';
@@ -1283,7 +1419,7 @@ function gpsStack(V) {
 
 function visitRow(v, showRep = true) {
   return `<button class="vrow" data-visit="${esc(v.id)}"><span class="dot" style="background:${ST_COLOR[v.st] || 'var(--muted)'}"></span>
-    <span class="mn"><b>${esc(v.an)}${v.fl ? ' <span class="flagmark">!</span>' : ''}</b><span class="sub">${showRep ? esc(v.rep) + ' – ' : ''}${esc(labelOfListValue(v.area))}${v.out ? ' – ' + esc(lbl(v.out)) : ''}</span></span>
+    <span class="mn"><b>${esc(v.an)}${v.fl ? ' <span class="flagmark">!</span>' : ''}</b><span class="sub">${showRep ? esc(v.rep) + ' – ' : ''}${esc(placeLabel(v.area, v.dis))}${v.out ? ' – ' + esc(lbl(v.out)) : ''}</span></span>
     <span class="when">${esc(fmtDay(v.d))}<br>${esc(v.t)}</span></button>`;
 }
 const sortRecent = V => V.slice().sort((a, b) => (b.d + b.t).localeCompare(a.d + a.t));
@@ -1332,6 +1468,7 @@ function dashOverview(V) {
   if (data.scope.length > 1) html += card(t('sByChannel'), barsH(countBy(V, v => v.ch), chLabel, k => CH[k]?.color || 'var(--sand)'));
   html += gpsStack(V);
   html += card(t('sAreas'), barsH(countBy(V, v => v.area).slice(0, 6), labelOfListValue));
+  html += card(t('sDistricts'), barsH(countBy(V, v => v.dis ? v.area + '||' + v.dis : '').slice(0, 8), k => { const [a, d] = k.split('||'); return placeLabel(a, d); }));
   html += card(t('sOutcome'), barsH(countBy(V, v => v.out).slice(0, 6), lbl));
   return html;
 }
@@ -1475,8 +1612,9 @@ function openVisitDetail(id) {
   const flags = v.fl ? esc(v.fl).split(' | ').join('<br>') : '';
   $('sheet').dataset.visit = id;
   $('sheet').innerHTML = `<div class="grab"></div>
-    <h3>${esc(v.an)}</h3><p class="sub" style="margin:4px 0 0">${esc(labelOfListValue(v.cat))} – ${esc(labelOfListValue(v.area))}</p>
+    <h3>${esc(v.an)}</h3><p class="sub" style="margin:4px 0 0">${esc(labelOfListValue(v.cat))} – ${esc(placeLabel(v.area, v.dis))}</p>
     <dl class="dl">
+      ${row('dDistrict', esc(distLabel(v.dis)))}${row('dStreet', esc(v.street))}${row('dGap', v.gap != null ? esc(t('minAfter', { n: v.gap })) : '')}
       ${row('dRep', esc(v.rep))}${row('dChannel', esc(chLabel(v.ch)))}${row('dWhen', esc(fmtDay(v.d) + ' ' + v.t))}
       ${row('dPurpose', esc(lbl(v.pur)))}${row('dOutcome', esc(lbl(v.out)))}${row('dContact', esc(v.cp))}
       ${row('dProducts', v.prod ? esc(v.prod.split(/\s*,\s*/).map(labelOfListValue).join(lang === 'ar' ? '، ' : ', ')) : '')}
@@ -1540,7 +1678,10 @@ $('btnUnpick').onclick = () => { state.picked = null; showPicked(); renderResult
 $('btnGps').onclick = () => startGPS();
 $('btnGpsHelp').onclick = openGpsHelp;
 $('btnSave').onclick = save;
-['nName','nCat','nArea'].forEach(id => $(id).addEventListener('input', updateSave));
+['nName','nCat'].forEach(id => $(id).addEventListener('input', updateSave));
+
+
+setInterval(() => { if (state.user && state.view === 'home' && state.lastVisitAt) renderHome(); }, 30000);
 
 /* ---------------- START ---------------- */
 (function init() {
