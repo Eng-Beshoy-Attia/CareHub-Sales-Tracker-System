@@ -65,9 +65,11 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid c
 .field svg{position:absolute;inset-inline-start:12px;top:50%;width:20px;height:20px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .field input{padding-inline-start:42px}
 .field .eye{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--muted);font-size:.8rem;font-weight:600;cursor:pointer;padding:8px}
-.login-foot{font-size:.78rem;color:rgba(255,255,255,.55);text-align:center}
-.credit{display:block;margin-top:6px;font-size:.74rem;letter-spacing:.02em;opacity:.85}
-.login-foot .credit{color:var(--sand)}
+.login-foot{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:12px;padding:0 8px;font-size:.8rem;color:rgba(255,255,255,.6);text-align:center}
+.credit{display:block;font-size:.8rem;letter-spacing:.02em;color:var(--sand);opacity:.9}
+.credit b{font-weight:500}
+.foot .credit{margin-top:6px;color:var(--sand-ink);opacity:.85}
+@media (max-height:720px){.login-wrap{gap:16px;padding-top:4px}.login-foot{margin-top:10px}.login-brand img{width:112px}.login-card{padding:18px 18px 14px}.login-card p{display:none}}
 .msg{min-height:1.4em;color:var(--bad);font-size:.88rem;margin:10px 0 0}
 #loading{justify-content:center;align-items:center;gap:28px}
 #loading .login-brand img{width:130px}
@@ -300,7 +302,7 @@ main.no-tabs{padding-bottom:24px}
       <button id="btnLogin" class="btn" data-i18n="signIn"></button>
       <p id="loginMsg" class="msg" role="alert"></p>
     </div>
-    <p class="login-foot"><span data-i18n="tagline"></span><span class="credit" dir="ltr">Created by Eng. Beshoy Attia</span></p>
+    <footer class="login-foot"><span data-i18n="tagline"></span><span class="credit" dir="ltr"><span>Created by</span> <b>Eng. Beshoy Attia</b></span></footer>
   </div>
 </div>
 
@@ -618,7 +620,7 @@ Object.assign(T.en, {
   gNoZoneT:'{area} has no GPS zone', gNoZoneX:'Ask your manager to add {area} in the AreaZones sheet.',
   gNotYourAreaT:'Not your area', gNotYourAreaX:'You’re in {area}, which isn’t one of your assigned areas.', gInArea:'Inside the {area} zone.',
   E_OUTSIDE_AREA:'You’re {dist} outside the {area} zone. Visits in {area} can only be logged from inside it',
-  E_AREA_NO_ZONE:'{area} has no GPS zone. Ask your manager to add it in the AreaZones sheet', E_NOT_YOUR_AREA:'{area} isn’t one of your assigned areas', F_NO_ZONE:'Area has no GPS zone', show:'Show', hide:'Hide', visitsN:'{n} visits', namePh:'Type your name as registered', checking:'Checking', loadingT:'Welcome, {name}', loadingX:'Loading your data…', E_MANAGER_NO_VISITS:'Managers don’t log visits', E_TOO_MANY_ATTEMPTS:'Too many wrong attempts. Try again in {min} minutes',
+  E_AREA_NO_ZONE:'{area} has no GPS zone. Ask your manager to add it in the AreaZones sheet', E_NOT_YOUR_AREA:'{area} isn’t one of your assigned areas', F_NO_ZONE:'Area has no GPS zone', show:'Show', hide:'Hide', visitsN:'{n} visits', namePh:'Type your name as registered', idleOut:'You were signed out after {min} minutes without activity. Please sign in again.', sessionEnded:'Your session ended. Please sign in again.', E_SESSION_EXPIRED:'Your session ended. Please sign in again', checking:'Checking', loadingT:'Welcome, {name}', loadingX:'Loading your data…', E_MANAGER_NO_VISITS:'Managers don’t log visits', E_TOO_MANY_ATTEMPTS:'Too many wrong attempts. Try again in {min} minutes',
   dgSecure:'Secure page (https)', dgPerm:'Location permission', dgInApp:'In-app browser', dgErr:'Last error', yes:'Yes', no:'No'
 });
 Object.assign(T.ar, {
@@ -656,7 +658,7 @@ Object.assign(T.ar, {
   gNoZoneT:'منطقة {area} ملهاش حدود GPS', gNoZoneX:'اطلب من المدير يضيف {area} في شيت AreaZones.',
   gNotYourAreaT:'دي مش منطقتك', gNotYourAreaX:'إنت في {area}، ودي مش من المناطق المتحددة ليك.', gInArea:'إنت جوه منطقة {area}.',
   E_OUTSIDE_AREA:'إنت بره منطقة {area} بمسافة {dist}. زيارات {area} لازم تتسجل وإنت جوه المنطقة',
-  E_AREA_NO_ZONE:'منطقة {area} ملهاش حدود GPS. اطلب من المدير يضيفها في شيت AreaZones', E_NOT_YOUR_AREA:'{area} مش من المناطق المتحددة ليك', F_NO_ZONE:'المنطقة ملهاش حدود GPS', show:'إظهار', hide:'إخفاء', visitsN:'{n} زيارات', namePh:'اكتب اسمك زي ما هو متسجل', checking:'بنتأكد من البيانات', loadingT:'أهلًا، {name}', loadingX:'بنحمّل بياناتك…', E_MANAGER_NO_VISITS:'المديرين مش بيسجلوا زيارات', E_TOO_MANY_ATTEMPTS:'محاولات غلط كتير. جرّب تاني بعد {min} دقايق',
+  E_AREA_NO_ZONE:'منطقة {area} ملهاش حدود GPS. اطلب من المدير يضيفها في شيت AreaZones', E_NOT_YOUR_AREA:'{area} مش من المناطق المتحددة ليك', F_NO_ZONE:'المنطقة ملهاش حدود GPS', show:'إظهار', hide:'إخفاء', visitsN:'{n} زيارات', namePh:'اكتب اسمك زي ما هو متسجل', idleOut:'اتعملك خروج بعد {min} دقايق من غير استخدام. سجّل دخول تاني.', sessionEnded:'الجلسة خلصت. سجّل دخول تاني.', E_SESSION_EXPIRED:'الجلسة خلصت. سجّل دخول تاني', checking:'بنتأكد من البيانات', loadingT:'أهلًا، {name}', loadingX:'بنحمّل بياناتك…', E_MANAGER_NO_VISITS:'المديرين مش بيسجلوا زيارات', E_TOO_MANY_ATTEMPTS:'محاولات غلط كتير. جرّب تاني بعد {min} دقايق',
   dgSecure:'صفحة آمنة (https)', dgPerm:'إذن الموقع', dgInApp:'متصفح جوه أبلكيشن', dgErr:'آخر خطأ', yes:'أيوه', no:'لأ'
 });
 
@@ -767,14 +769,18 @@ function translateError(j) {
 
 async function api(action, data = {}) {
   if (!API_URL.startsWith('https://')) throw new Error(t('needUrl'));
-  const body = Object.assign({ action, name: state.user?.name, pin: state.pin }, data);
+  const body = Object.assign({ action }, state.token ? { token: state.token } : {}, data);
   let res;
   try {
     res = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body) });
   } catch (e) { throw new Error(t('offline')); }
   let j;
   try { j = await res.json(); } catch (e) { throw new Error(t('genericError')); }
-  if (!j.ok) throw new Error(translateError(j));
+  if (!j.ok) {
+    if (j.code === 'SESSION_EXPIRED' && state.user) { signOut('sessionEnded'); }
+    throw new Error(translateError(j));
+  }
+  lastPing = Date.now();
   return j;
 }
 
@@ -818,42 +824,94 @@ function showLoading(name) {
   screen('loading');
 }
 
-async function login(name, pin, silent=false) {
-  const btn = $('btnLogin');
-  if (!silent) setBusy(btn, true, 'checking');
-  try {
-    // 1) check name + PIN
-    const auth = await api('login', { name, pin });
-    state.user = auth.user; state.pin = pin;
-    // 2) load this user's data
-    showLoading(auth.user.name);
-    const j = await api('bootstrap');
-    state.user = j.user; state.lists = j.lists; state.accounts = j.accounts; state.settings = j.settings; learnNames(j.accounts);
-    const mgr = isManager();
-    document.querySelectorAll('#tabbar [data-go="home"], #tabbar [data-go="visit"]').forEach(b => b.hidden = mgr);
-    $('tabDash').hidden = !canDash();
-    D.data = null; state.home = null;
-    screen('shell');
-    renderMe();
-    go(mgr ? (state.view === 'me' || state.view === 'rep' ? state.view : 'dash') : (['home', 'me'].includes(state.view) ? state.view : 'home'));
-  } catch (e) {
-    const wasSession = silent;
-    state.user = null; state.pin = null;
-    if (!wasSession || /PIN|السري|disabled|موقوف|attempts|محاولات/i.test(e.message)) { try { localStorage.removeItem('sv_session'); } catch(_) {} }
-    screen('login');
-    $('loginMsg').textContent = e.message;
-  } finally { if (!silent) setBusy(btn, false); }
+/* ---------------- SESSION ----------------
+   Refreshing the page keeps you signed in. After SESSION_IDLE_MIN minutes
+   (10 by default) without touching the app, you are signed out. */
+const SESS_KEY = 'sv_sess';
+const idleMs = () => (Number(state.settings && state.settings.idleMin) || 10) * 60000;
+let lastActive = Date.now(), lastSaved = 0, lastPing = Date.now();
+
+function saveSession() {
+  if (!state.token || !state.user) return;
+  try { sessionStorage.setItem(SESS_KEY, JSON.stringify({ token: state.token, name: state.user.name, idle: idleMs(),
+    view: state.view, repName: D.repName, lastActive })); } catch (e) {}
+}
+function readSession() { try { return JSON.parse(sessionStorage.getItem(SESS_KEY) || 'null'); } catch (e) { return null; } }
+function clearSession() { try { sessionStorage.removeItem(SESS_KEY); localStorage.removeItem('sv_session'); } catch (e) {} }
+
+function touchSession(force) {
+  lastActive = Date.now();
+  // keep the server session alive while the user is really using the app
+  if (state.token && lastActive - lastPing > 240000) { lastPing = lastActive; api('ping').catch(() => {}); }
+  if (force || lastActive - lastSaved > 15000) { lastSaved = lastActive; saveSession(); }
+}
+function checkIdle() {
+  if (state.user && Date.now() - lastActive > idleMs()) signOut('idleOut');
+}
+['pointerdown', 'keydown', 'input', 'wheel', 'touchstart'].forEach(ev => document.addEventListener(ev, () => { if (state.user) touchSession(false); }, { passive: true, capture: true }));
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkIdle(); else if (state.user) saveSession(); });
+window.addEventListener('pagehide', () => { if (state.user) saveSession(); });
+setInterval(checkIdle, 20000);
+
+async function startSession(user, token, restore) {
+  state.user = user; state.token = token;
+  showLoading(user.name);
+  const j = await api('bootstrap');
+  state.user = j.user; state.lists = j.lists; state.accounts = j.accounts; state.settings = j.settings; learnNames(j.accounts);
+  const mgr = isManager();
+  document.querySelectorAll('#tabbar [data-go="home"], #tabbar [data-go="visit"]').forEach(b => b.hidden = mgr);
+  $('tabDash').hidden = !canDash();
+  D.data = null; state.home = null;
+  screen('shell');
+  renderMe();
+  let view = restore && restore.view;
+  if (view === 'rep' && restore.repName) D.repName = restore.repName; else if (view === 'rep') view = 'dash';
+  if (view === 'done') view = 'home';
+  go(view || (mgr ? 'dash' : 'home'));
+  touchSession(true);
 }
 
-function logout() {
+async function login(name, pin) {
+  const btn = $('btnLogin');
+  setBusy(btn, true, 'checking');
+  try {
+    const auth = await api('login', { name, pin });     // the PIN is only sent here
+    $('loginPin').value = '';
+    await startSession(auth.user, auth.token, null);
+  } catch (e) {
+    state.user = null; state.token = null; clearSession();
+    screen('login');
+    $('loginMsg').textContent = e.message;
+  } finally { setBusy(btn, false); }
+}
+
+async function resumeSession(s) {
+  try { await startSession({ name: s.name }, s.token, s); }
+  catch (e) {
+    state.user = null; state.token = null; clearSession();
+    screen('login');
+    $('loginMsg').textContent = e.message;
+  }
+}
+
+async function reloadData() {
+  const keep = { view: state.view, repName: D.repName };
+  try { await startSession(state.user, state.token, keep); } catch (e) { toast(e.message, true); }
+}
+
+function signOut(reasonKey) {
+  const token = state.token;
   stopGPS();
-  try { localStorage.removeItem('sv_session'); } catch(e) {}
-  Object.assign(state, { user:null, pin:null, home:null, view:null, lastResult:null });
+  clearSession();
+  if (token) api('logout', { token }).catch(() => {});
+  Object.assign(state, { user:null, token:null, home:null, view:null, lastResult:null });
   Object.assign(D, { data:null, repName:null, rep:'', team:'', channel:'' });
-  $('loginPin').value = ''; $('loginMsg').textContent = '';
+  $('loginPin').value = ''; $('loginMsg').textContent = reasonKey ? t(reasonKey, { min: Math.round(idleMs() / 60000) }) : '';
+  closeSheet();
   delete document.body.dataset.ch;
   screen('login');
 }
+function logout() { signOut(''); }
 
 /* ---------------- NAVIGATION ---------------- */
 const VIEWS = { home:'vHome', visit:'vVisit', done:'vDone', dash:'vDash', rep:'vRep', me:'vMe' };
@@ -864,6 +922,7 @@ function go(view) {
   if (isManager() && ['home', 'visit', 'done'].includes(view)) view = 'dash';
   if (state.view === 'visit' && view !== 'visit') stopGPS();
   state.view = view;
+  touchSession(true);
   Object.entries(VIEWS).forEach(([k, id]) => $(id).hidden = k !== view);
   const hideTabs = view === 'visit';
   $('tabbar').hidden = hideTabs;
@@ -942,7 +1001,7 @@ function renderMe() {
       <button id="btnRefresh">${esc(t('refresh'))}<span>↻</span></button>
       <button class="danger" id="btnLogout">${esc(t('signOut'))}</button>
     </div>
-    <p class="foot">CareHub Sales Visits<span class="credit" dir="ltr">Created by Eng. Beshoy Attia</span></p>`;
+    <p class="foot">CareHub Sales Visits<br><span class="credit" dir="ltr"><span>Created by</span> <b>Eng. Beshoy Attia</b></span></p>`;
 }
 
 /* ---------------- VISIT FORM ---------------- */
@@ -1662,7 +1721,7 @@ document.addEventListener('click', e => {
   if (el.dataset.lang) return setLang(el.dataset.lang);
   if (el.hasAttribute('data-lang-toggle')) return setLang(lang === 'ar' ? 'en' : 'ar');
   if (el.hasAttribute('data-close')) return closeSheet();
-  if (el.id === 'btnRefresh') { toast(t('refreshing')); D.data = null; state.home = null; return login(state.user.name, state.pin, true); }
+  if (el.id === 'btnRefresh') { toast(t('refreshing')); return reloadData(); }
   if (el.id === 'btnLogout') return logout();
   if (el.id === 'dRetry') return loadDash();
 });
@@ -1704,9 +1763,11 @@ setInterval(() => { if (state.user && state.view === 'home' && state.lastVisitAt
 /* ---------------- START ---------------- */
 (function init() {
   applyStatic();
-  // no saved sessions: everyone signs in every time the app opens
-  try { localStorage.removeItem('sv_session'); sessionStorage.clear(); } catch(e) {}
-  screen('login');
+  try { localStorage.removeItem('sv_session'); } catch (e) {}
+  const s = readSession();
+  // same tab, used in the last few minutes → stay signed in after a refresh
+  if (s && s.token && s.name && Date.now() - (s.lastActive || 0) < (s.idle || 600000)) { lastActive = s.lastActive; resumeSession(s); }
+  else { clearSession(); screen('login'); }
 })();
 </script>
 </body>
