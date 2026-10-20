@@ -239,6 +239,7 @@ main.no-tabs{padding-bottom:24px}
 .note{font-size:.82rem;color:var(--muted);margin:8px 2px 0}
 .searchbox{margin-bottom:6px}
 
+.supchip{display:inline-block;vertical-align:middle;font-size:.68rem;font-weight:700;color:var(--sand-ink);background:var(--sand-soft);border-radius:999px;padding:1px 8px;margin-inline-start:4px}
 /* ============ PROFILE ============ */
 .profile{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:16px}
 .profile .avatar{width:56px;height:56px;font-size:1.2rem;border-radius:16px;background:var(--navy);color:var(--sand)}
@@ -432,7 +433,8 @@ const T = {
     navHome:'Home', navVisit:'Visit', navDash:'Dashboard', navMe:'Profile',
     hello:'Hello, {name}', statToday:'Today', statWeek:'This week', statMonth:'This month',
     logT:'Log a visit', logX:'Your location is checked automatically.', dashT:'Open dashboard', dashX:'Team, accounts and visits analysis.',
-    roleRep:'{ch} sales rep', roleChMgr:'{ch} channel manager', roleDirector:'Sales director',
+    roleRep:'{ch} sales rep', roleChMgr:'{ch} channel manager', roleDirector:'Sales director', roleSup:'{ch} team supervisor',
+    team:'Team', allTeams:'All teams', supShort:'Supervisor', supOf:'Team: {n}', myTeamT:'My team', myTeamX:'Your team’s visits, accounts and performance.',
     myToday:'My visits today', refresh:'Refresh data', refreshing:'Refreshing data…', language:'Language',
     emptyToday:'No visits yet today. Your first visit will appear here.',
     allChannels:'All channels', back:'Back', newVisitTitle:'New visit', whoVisit:'The {title} you’re visiting',
@@ -496,7 +498,7 @@ const T = {
     E_TOO_FAR:'You’re {dist} away from “{name}”. You must be within {max} m to log this visit',
     E_NEW_ACCOUNT_INCOMPLETE:'Complete the new account details (name, category and area)',
     E_DUPLICATE_ACCOUNT:'“{name}” already exists in {area}. Pick it from existing accounts', E_BUSY:'Server is busy, try again',
-    E_NOT_MANAGER:'Dashboards are for managers only',
+    E_NOT_MANAGER:'Dashboards are for managers and supervisors only',
     F_CLOCK:'Device clock differs from real time', F_ACCURACY:'Unusual GPS accuracy — possible fake location app',
     F_OUT_OF_RANGE:'Far from the account location', F_FIRST_LOCATION:'Account location set for the first time — needs review',
     F_CLUSTER:'New account within {radius} m of {count} other account(s) you added'
@@ -509,7 +511,8 @@ const T = {
     navHome:'الرئيسية', navVisit:'زيارة', navDash:'المتابعة', navMe:'حسابي',
     hello:'أهلًا، {name}', statToday:'النهارده', statWeek:'الأسبوع ده', statMonth:'الشهر ده',
     logT:'سجّل زيارة', logX:'موقعك بيتأكد أوتوماتيك.', dashT:'افتح لوحة المتابعة', dashX:'تحليل الفريق والحسابات والزيارات.',
-    roleRep:'مندوب {ch}', roleChMgr:'مدير قناة {ch}', roleDirector:'مدير المبيعات',
+    roleRep:'مندوب {ch}', roleChMgr:'مدير قناة {ch}', roleDirector:'مدير المبيعات', roleSup:'سوبرفايزر تيم {ch}',
+    team:'التيم', allTeams:'كل التيمات', supShort:'سوبرفايزر', supOf:'تيم {n}', myTeamT:'التيم بتاعي', myTeamX:'زيارات وحسابات وأداء التيم بتاعك.',
     myToday:'زياراتي النهارده', refresh:'تحديث البيانات', refreshing:'بنحدّث البيانات…', language:'اللغة',
     emptyToday:'لسه مفيش زيارات النهارده. أول زيارة هتظهر هنا.',
     allChannels:'كل القنوات', back:'رجوع', newVisitTitle:'زيارة جديدة', whoVisit:'{title} اللي بتزوره',
@@ -572,7 +575,7 @@ const T = {
     E_TOO_FAR:'إنت على بعد {dist} من "{name}". لازم تكون في حدود {max} م عشان الزيارة تتسجل',
     E_NEW_ACCOUNT_INCOMPLETE:'كمّل بيانات الحساب الجديد (الاسم والتصنيف والمنطقة)',
     E_DUPLICATE_ACCOUNT:'"{name}" موجود بالفعل في {area}. اختاره من الحسابات الموجودة', E_BUSY:'السيرفر مشغول، جرّب تاني',
-    E_NOT_MANAGER:'لوحة المتابعة للمديرين بس',
+    E_NOT_MANAGER:'لوحة المتابعة للمديرين والسوبرفايزرز بس',
     F_CLOCK:'ساعة الموبايل مختلفة عن الوقت الحقيقي', F_ACCURACY:'دقة GPS غير طبيعية — احتمال برنامج موقع وهمي',
     F_OUT_OF_RANGE:'بعيد عن مكان الحساب', F_FIRST_LOCATION:'أول مرة يتسجل موقع الحساب — محتاج مراجعة',
     F_CLUSTER:'حساب جديد في حدود {radius} م من {count} حساب تاني إنت ضفتهم'
@@ -703,7 +706,7 @@ const ST_COLOR = { VERIFIED:'var(--ok)', NEW_ACCOUNT:'var(--navy-2)', LOCATION_S
 const state = { user:null, pin:null, users:null, lists:{}, accounts:[], settings:{maxDistance:300,maxAccuracy:100,block:true},
   view:null, channel:null, mode:'existing', picked:null, pos:null, watchId:null, gpsTimer:null, gpsErr:null, saving:false,
   home:null, homeErr:null, lastResult:null };
-const D = { data:null, loading:false, err:null, period:'30', from:'', to:'', channel:'', rep:'', tab:'overview', repName:null, search:'' };
+const D = { data:null, loading:false, err:null, period:'30', from:'', to:'', channel:'', rep:'', team:'', tab:'overview', repName:null, search:'' };
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -717,6 +720,8 @@ const locale = () => lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB';
 const fmtDay = s => s ? new Intl.DateTimeFormat(locale(), { day:'numeric', month:'short', timeZone:'UTC' }).format(new Date(s + 'T12:00:00Z')) : '';
 const initials = n => String(n).trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 const isManager = () => state.user && state.user.role === 'Manager';
+const isSupervisor = () => state.user && state.user.role === 'Supervisor';
+const canDash = () => isManager() || isSupervisor();
 const listItems = name => (state.lists[name] || []).map(parseItem);
 const chLabel = ch => CH[ch] ? L(CH[ch].label) : ch;
 
@@ -733,6 +738,7 @@ function labelOfListValue(v) {
 function roleText(u = state.user) {
   if (!u) return '';
   if (u.role === 'Manager') return u.channel === 'ALL' ? t('roleDirector') : t('roleChMgr', { ch: chLabel(u.channel) });
+  if (u.role === 'Supervisor') return t('roleSup', { ch: chLabel(u.channel) });
   return t('roleRep', { ch: chLabel(u.channel) });
 }
 
@@ -795,7 +801,7 @@ function setLang(l) {
     renderResults(); showPicked(); setMode(state.mode); renderPlaceBox();
   }
   if (state.lastResult) renderDone();
-  if (isManager()) { renderDash(); if (D.repName) renderRep(); }
+  if (canDash()) { renderDash(); if (D.repName) renderRep(); }
   if (!$('sheetWrap').hidden && $('sheet').dataset.visit) openVisitDetail($('sheet').dataset.visit);
 }
 
@@ -825,7 +831,7 @@ async function login(name, pin, silent=false) {
     state.user = j.user; state.lists = j.lists; state.accounts = j.accounts; state.settings = j.settings; learnNames(j.accounts);
     const mgr = isManager();
     document.querySelectorAll('#tabbar [data-go="home"], #tabbar [data-go="visit"]').forEach(b => b.hidden = mgr);
-    $('tabDash').hidden = !mgr;
+    $('tabDash').hidden = !canDash();
     D.data = null; state.home = null;
     screen('shell');
     renderMe();
@@ -843,7 +849,7 @@ function logout() {
   stopGPS();
   try { localStorage.removeItem('sv_session'); } catch(e) {}
   Object.assign(state, { user:null, pin:null, home:null, view:null, lastResult:null });
-  Object.assign(D, { data:null, repName:null, rep:'', channel:'' });
+  Object.assign(D, { data:null, repName:null, rep:'', team:'', channel:'' });
   $('loginPin').value = ''; $('loginMsg').textContent = '';
   delete document.body.dataset.ch;
   screen('login');
@@ -854,7 +860,7 @@ const VIEWS = { home:'vHome', visit:'vVisit', done:'vDone', dash:'vDash', rep:'v
 const TAB_OF = { home:'home', visit:'visit', done:'visit', dash:'dash', rep:'dash', me:'me' };
 
 function go(view) {
-  if (view === 'dash' && !isManager()) view = 'home';
+  if ((view === 'dash' || view === 'rep') && !canDash()) view = 'home';
   if (isManager() && ['home', 'visit', 'done'].includes(view)) view = 'dash';
   if (state.view === 'visit' && view !== 'visit') stopGPS();
   state.view = view;
@@ -880,7 +886,7 @@ function renderBar() {
   $('barMark').style.display = back ? 'none' : '';
   const titles = {
     home: ['CareHub', ''], visit: [t('newVisitTitle'), state.user.name], done: [t('newVisitTitle'), state.user.name],
-    dash: [t('navDash'), state.user.name + ' – ' + roleText()],
+    dash: [isSupervisor() ? t('myTeamT') : t('navDash'), state.user.name + ' – ' + roleText()],
     rep: [D.repName || '', (() => { const r = (D.data?.reps || []).find(x => x.name === D.repName); return r ? roleText(r) : ''; })()],
     me: [t('navMe'), state.user.name]
   }[state.view] || ['CareHub', ''];
@@ -919,6 +925,7 @@ function renderHome() {
     </div>
     <button class="action" data-go="visit"><span class="ic"><svg><use href="#i-pin"/></svg></span>
       <span><b>${esc(t('logT'))}</b><small>${esc(t('logX'))}</small></span><span class="go flip">›</span></button>
+    ${isSupervisor() ? `<button class="action alt" data-go="dash" style="background:var(--surface);color:var(--ink);box-shadow:none;border:1px solid var(--line);margin-top:12px"><span class="ic"><svg><use href="#i-chart"/></svg></span><span><b>${esc(t('myTeamT'))}</b><small>${esc(t('myTeamX'))}</small></span><span class="go flip">›</span></button>` : ''}
     ${gapText() ? `<div class="gapnote" style="margin-top:12px">${esc(gapText())}</div>` : ''}
     <div class="sechead"><h2>${esc(t('myToday'))}</h2>${h && h.visits.length ? `<span>${esc(t('visitsN', { n: h.visits.length }))}</span>` : ''}</div>
     ${list}`;
@@ -1371,6 +1378,12 @@ async function loadDash() {
   if (state.view === 'rep') renderRep();
 }
 
+const FIELD_ROLES = ['Rep', 'Supervisor'];
+const supOf = name => (D.data?.reps.find(r => r.name === name) || {}).sup || '';
+const inTeamFilter = name => !D.team || name === D.team || normN(supOf(name)) === normN(D.team);
+function supervisors() { return D.data ? D.data.reps.filter(r => r.role === 'Supervisor').map(r => r.name).sort((a, b) => a.localeCompare(b)) : []; }
+function filteredVisits() { return D.data.visits.filter(v => (!D.rep || v.rep === D.rep) && inTeamFilter(v.rep)); }
+
 function repNames() {
   if (!D.data) return [];
   return [...new Set(D.data.reps.map(r => r.name).concat(D.data.visits.map(v => v.rep)))].sort((a, b) => a.localeCompare(b));
@@ -1428,7 +1441,7 @@ const sortRecent = V => V.slice().sort((a, b) => (b.d + b.t).localeCompare(a.d +
 
 /* ---- Render shell ---- */
 function renderDash() {
-  if (!isManager()) return;
+  if (!canDash()) return;
   const isAll = state.user.channel === 'ALL';
   const [from, to] = periodRange();
   $('dFilters').innerHTML = `
@@ -1437,7 +1450,8 @@ function renderDash() {
       <div><label for="dTo">${esc(t('to'))}</label><input type="date" id="dTo" value="${to}" max="${todayStr()}"></div></div>` : ''}
     <div class="row2">
       ${isAll ? `<div><label for="dCh">${esc(t('channel'))}</label><select id="dCh"><option value="">${esc(t('allChannels'))}</option>${Object.keys(CH).map(k => `<option value="${k}" ${D.channel === k ? 'selected' : ''}>${esc(chLabel(k))}</option>`).join('')}</select></div>` : ''}
-      <div><label for="dRep">${esc(t('rep'))}</label><select id="dRep"><option value="">${esc(t('allReps'))}</option>${repNames().map(n => `<option ${D.rep === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></div>
+      ${isManager() && supervisors().length ? `<div><label for="dTeam">${esc(t('team'))}</label><select id="dTeam"><option value="">${esc(t('allTeams'))}</option>${supervisors().map(n => `<option ${D.team === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></div>` : ''}
+      <div><label for="dRep">${esc(t('rep'))}</label><select id="dRep"><option value="">${esc(t('allReps'))}</option>${repNames().filter(inTeamFilter).map(n => `<option ${D.rep === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></div>
     </div>`;
   $('dTabs').innerHTML = ['overview', 'team', 'accounts', 'visits'].map(k => `<button data-dtab="${k}" aria-pressed="${D.tab === k}">${esc(t('t_' + k))}</button>`).join('');
 
@@ -1445,7 +1459,7 @@ function renderDash() {
   if (D.loading) { body.innerHTML = `<div class="dash-loading"><span class="spin dark"></span>${esc(t('loadingDash'))}</div>`; return; }
   if (D.err) { body.innerHTML = `<div class="card"><p class="msg">${esc(D.err)}</p><button class="btn small" id="dRetry">${esc(t('retry'))}</button></div>`; return; }
   if (!D.data) { body.innerHTML = ''; return; }
-  const V = D.data.visits.filter(v => !D.rep || v.rep === D.rep);
+  const V = filteredVisits();
   const note = D.rep ? `<p class="note">${esc(t('repFilterNote', { rep: D.rep }))}</p>` : '';
   body.innerHTML = ({ overview: dashOverview, team: dashTeam, accounts: dashAccounts, visits: dashVisits })[D.tab](V) + (D.tab !== 'team' ? note : '');
 }
@@ -1454,7 +1468,7 @@ function renderDash() {
 function dashOverview(V) {
   const data = D.data, total = V.length;
   const repsActive = new Set(V.map(v => v.rep)).size;
-  const repsAll = data.reps.filter(r => r.role === 'Rep').length;
+  const repsAll = data.reps.filter(r => FIELD_ROLES.includes(r.role) && inTeamFilter(r.name)).length;
   const repDays = new Set(V.map(v => v.rep + '|' + v.d)).size;
   const flagged = V.filter(v => v.fl).length;
   let html = `<div class="kpis">
@@ -1489,8 +1503,8 @@ function teamStats(name, all) {
 }
 
 function dashTeam() {
-  const all = D.data.visits;
-  const names = [...new Set(D.data.reps.filter(r => r.role === 'Rep').map(r => r.name).concat(all.map(v => v.rep)))];
+  const all = D.data.visits.filter(v => inTeamFilter(v.rep));
+  const names = [...new Set(D.data.reps.filter(r => FIELD_ROLES.includes(r.role) && inTeamFilter(r.name)).map(r => r.name).concat(all.map(v => v.rep)))];
   const rows = names.map(n => teamStats(n, all)).sort((a, b) => b.visits - a.visits || a.name.localeCompare(b.name));
   if (!rows.length) return card(t('sTeam'), emptyMsg());
   const max = Math.max(1, ...rows.map(r => r.visits));
@@ -1499,7 +1513,8 @@ function dashTeam() {
     const ch = chOf(r.name);
     return `<button class="reprow ${r.visits ? '' : 'zero'}" data-rep="${esc(r.name)}">
       <div class="top"><span class="avatar" style="--c:${CH[ch]?.color || 'var(--navy)'}">${esc(initials(r.name))}</span>
-        <span class="nm"><b>${esc(r.name)}</b><span class="sub">${esc(chLabel(ch))}</span></span><span class="big">${fmtN(r.visits)}</span></div>
+        <span class="nm"><b>${esc(r.name)}${(D.data.reps.find(x => x.name === r.name) || {}).role === 'Supervisor' ? ` <span class="supchip">${esc(t('supShort'))}</span>` : ''}</b>
+          <span class="sub">${esc(chLabel(ch))}${supOf(r.name) ? ' – ' + esc(t('supOf', { n: supOf(r.name) })) : ''}</span></span><span class="big">${fmtN(r.visits)}</span></div>
       <div class="bar"><i style="width:${r.visits / max * 100}%"></i></div>
       <div class="facts"><span>${esc(t('fAccounts'))} <b>${r.accounts}</b></span><span>${esc(t('fNew'))} <b>${r.newAcc}</b></span>
         <span>${esc(t('fFlagged'))} <b>${r.flagged}</b></span><span>${esc(t('fDays'))} <b>${r.days}</b></span>
@@ -1655,10 +1670,11 @@ document.addEventListener('change', e => {
   const id = e.target.id;
   if (id === 'dCh') { D.channel = e.target.value; D.rep = ''; loadDash(); }
   if (id === 'dRep') { D.rep = e.target.value; renderDash(); }
+  if (id === 'dTeam') { D.team = e.target.value; D.rep = ''; renderDash(); }
   if (id === 'dFrom' || id === 'dTo') { if (id === 'dFrom') D.from = e.target.value; else D.to = e.target.value; if (D.from && D.to) loadDash(); }
 });
 document.addEventListener('input', e => {
-  if (e.target.id === 'dSearch') { D.search = e.target.value; const V = D.data.visits.filter(v => !D.rep || v.rep === D.rep); $('dLog').innerHTML = visitLog(V); }
+  if (e.target.id === 'dSearch') { D.search = e.target.value; const V = filteredVisits(); $('dLog').innerHTML = visitLog(V); }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('sheetWrap').hidden) closeSheet(); });
 
