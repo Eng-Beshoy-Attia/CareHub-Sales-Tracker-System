@@ -41,6 +41,7 @@ textarea{min-height:84px;resize:vertical}
 input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid color-mix(in srgb,var(--sand) 55%,transparent);outline-offset:1px}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border:0;border-radius:var(--r-sm);font-weight:700;font-size:1rem;cursor:pointer;background:var(--navy);color:#fff}
 .btn.sand{background:var(--sand);color:var(--navy-ink)}
+a.btn{text-decoration:none}
 .btn.accent{background:var(--accent)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
@@ -242,6 +243,12 @@ main.no-tabs{padding-bottom:24px}
 .searchbox{margin-bottom:6px}
 
 .supchip{display:inline-block;vertical-align:middle;font-size:.68rem;font-weight:700;color:var(--sand-ink);background:var(--sand-soft);border-radius:999px;padding:1px 8px;margin-inline-start:4px}
+.acc-head{display:flex;align-items:center;gap:12px}
+.acc-head .avatar{width:48px;height:48px;font-size:1rem;border-radius:14px}
+.hist .tl-card{display:block;width:100%;text-align:start;cursor:pointer;font:inherit;color:inherit}
+.note-txt{margin:6px 0;padding:8px 10px;background:var(--bg);border-radius:8px;font-size:.88rem;white-space:pre-wrap}
+.next{display:inline-block;margin-top:4px;font-size:.82rem;font-weight:600;color:var(--sand-ink)}
+.hist time{font-size:.74rem}
 /* ============ PROFILE ============ */
 .profile{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:16px}
 .profile .avatar{width:56px;height:56px;font-size:1.2rem;border-radius:16px;background:var(--navy);color:var(--sand)}
@@ -404,6 +411,9 @@ main.no-tabs{padding-bottom:24px}
     <!-- REP DETAIL -->
     <section class="view" id="vRep" hidden></section>
 
+    <!-- ACCOUNT DETAIL -->
+    <section class="view" id="vAcc" hidden></section>
+
     <!-- PROFILE -->
     <section class="view" id="vMe" hidden></section>
   </main>
@@ -411,7 +421,7 @@ main.no-tabs{padding-bottom:24px}
   <nav class="tabbar" id="tabbar">
     <button data-go="home"><svg><use href="#i-home"/></svg><span data-i18n="navHome"></span></button>
     <button data-go="visit" class="fab"><span class="c"><svg><use href="#i-plus"/></svg></span><span data-i18n="navVisit"></span></button>
-    <button data-go="dash" id="tabDash"><svg><use href="#i-chart"/></svg><span data-i18n="navDash"></span></button>
+    <button data-go="dash" id="tabDash"><svg><use href="#i-chart"/></svg><span data-i18n="navDash" id="tabDashLbl"></span></button>
     <button data-go="me"><svg><use href="#i-user"/></svg><span data-i18n="navMe"></span></button>
   </nav>
 </div>
@@ -437,6 +447,10 @@ const T = {
     logT:'Log a visit', logX:'Your location is checked automatically.', dashT:'Open dashboard', dashX:'Team, accounts and visits analysis.',
     roleRep:'{ch} sales rep', roleChMgr:'{ch} channel manager', roleDirector:'Sales director', roleSup:'{ch} team supervisor',
     team:'Team', allTeams:'All teams', supShort:'Supervisor', supOf:'Team: {n}', myTeamT:'My team', myTeamX:'Your team’s visits, accounts and performance.',
+    navMine:'My stats', myStatsT:'My performance', myStatsX:'Your visits, your doctors and accounts, and all your notes.',
+    accountT:'Account', sMyAccounts:'My accounts', sAllAccounts:'All accounts', searchAccounts:'Search by name, area or specialty',
+    openAccount:'Open account history', accInfo:'Account details', sHistory:'Visit history & notes', firstVisit:'First visit',
+    daysAgo:'{n} days ago', byYou:'by you', dAddress:'Address', addedBy:'Added by', visit:'Visit',
     myToday:'My visits today', refresh:'Refresh data', refreshing:'Refreshing data…', language:'Language',
     emptyToday:'No visits yet today. Your first visit will appear here.',
     allChannels:'All channels', back:'Back', newVisitTitle:'New visit', whoVisit:'The {title} you’re visiting',
@@ -515,6 +529,10 @@ const T = {
     logT:'سجّل زيارة', logX:'موقعك بيتأكد أوتوماتيك.', dashT:'افتح لوحة المتابعة', dashX:'تحليل الفريق والحسابات والزيارات.',
     roleRep:'مندوب {ch}', roleChMgr:'مدير قناة {ch}', roleDirector:'مدير المبيعات', roleSup:'سوبرفايزر تيم {ch}',
     team:'التيم', allTeams:'كل التيمات', supShort:'سوبرفايزر', supOf:'تيم {n}', myTeamT:'التيم بتاعي', myTeamX:'زيارات وحسابات وأداء التيم بتاعك.',
+    navMine:'أدائي', myStatsT:'أدائي', myStatsX:'زياراتك والدكاترة والحسابات بتاعتك وكل ملاحظاتك.',
+    accountT:'الحساب', sMyAccounts:'حساباتي', sAllAccounts:'كل الحسابات', searchAccounts:'دوّر بالاسم أو المنطقة أو التخصص',
+    openAccount:'افتح سجل الحساب', accInfo:'بيانات الحساب', sHistory:'سجل الزيارات والملاحظات', firstVisit:'أول زيارة',
+    daysAgo:'من {n} يوم', byYou:'زياراتك', dAddress:'العنوان', addedBy:'ضافه', visit:'زيارة',
     myToday:'زياراتي النهارده', refresh:'تحديث البيانات', refreshing:'بنحدّث البيانات…', language:'اللغة',
     emptyToday:'لسه مفيش زيارات النهارده. أول زيارة هتظهر هنا.',
     allChannels:'كل القنوات', back:'رجوع', newVisitTitle:'زيارة جديدة', whoVisit:'{title} اللي بتزوره',
@@ -723,7 +741,8 @@ const fmtDay = s => s ? new Intl.DateTimeFormat(locale(), { day:'numeric', month
 const initials = n => String(n).trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 const isManager = () => state.user && state.user.role === 'Manager';
 const isSupervisor = () => state.user && state.user.role === 'Supervisor';
-const canDash = () => isManager() || isSupervisor();
+const canDash = () => !!state.user;
+const isSelf = () => state.user && !isManager() && !isSupervisor();
 const listItems = name => (state.lists[name] || []).map(parseItem);
 const chLabel = ch => CH[ch] ? L(CH[ch].label) : ch;
 
@@ -807,7 +826,8 @@ function setLang(l) {
     renderResults(); showPicked(); setMode(state.mode); renderPlaceBox();
   }
   if (state.lastResult) renderDone();
-  if (canDash()) { renderDash(); if (D.repName) renderRep(); }
+  if (canDash()) { renderDash(); if (D.repName) renderRep(); if (state.view === 'acc') renderAccount(); }
+  $('tabDashLbl').textContent = t($('tabDashLbl').dataset.i18n || 'navDash');
   if (!$('sheetWrap').hidden && $('sheet').dataset.visit) openVisitDetail($('sheet').dataset.visit);
 }
 
@@ -861,6 +881,7 @@ async function startSession(user, token, restore) {
   const mgr = isManager();
   document.querySelectorAll('#tabbar [data-go="home"], #tabbar [data-go="visit"]').forEach(b => b.hidden = mgr);
   $('tabDash').hidden = !canDash();
+  $('tabDashLbl').dataset.i18n = isSelf() ? 'navMine' : 'navDash'; $('tabDashLbl').textContent = t($('tabDashLbl').dataset.i18n);
   D.data = null; state.home = null;
   screen('shell');
   renderMe();
@@ -914,8 +935,8 @@ function signOut(reasonKey) {
 function logout() { signOut(''); }
 
 /* ---------------- NAVIGATION ---------------- */
-const VIEWS = { home:'vHome', visit:'vVisit', done:'vDone', dash:'vDash', rep:'vRep', me:'vMe' };
-const TAB_OF = { home:'home', visit:'visit', done:'visit', dash:'dash', rep:'dash', me:'me' };
+const VIEWS = { home:'vHome', visit:'vVisit', done:'vDone', dash:'vDash', rep:'vRep', acc:'vAcc', me:'vMe' };
+const TAB_OF = { home:'home', visit:'visit', done:'visit', dash:'dash', rep:'dash', acc:'dash', me:'me' };
 
 function go(view) {
   if ((view === 'dash' || view === 'rep') && !canDash()) view = 'home';
@@ -935,17 +956,19 @@ function go(view) {
   if (view === 'visit') openVisit();
   if (view === 'dash') { if (!D.data && !D.loading) loadDash(); else renderDash(); }
   if (view === 'rep') renderRep();
+  if (view === 'acc') renderAccount();
   if (view === 'me') renderMe();
 }
 
 function renderBar() {
   if (!state.user) return;
-  const back = state.view === 'visit' || state.view === 'rep';
+  const back = state.view === 'visit' || state.view === 'rep' || state.view === 'acc';
   $('btnBack').hidden = !back;
   $('barMark').style.display = back ? 'none' : '';
   const titles = {
     home: ['CareHub', ''], visit: [t('newVisitTitle'), state.user.name], done: [t('newVisitTitle'), state.user.name],
-    dash: [isSupervisor() ? t('myTeamT') : t('navDash'), state.user.name + ' – ' + roleText()],
+    dash: [isSupervisor() ? t('myTeamT') : isSelf() ? t('myStatsT') : t('navDash'), state.user.name + ' – ' + roleText()],
+    acc: [A_.data?.account?.name || t('accountT'), A_.data ? placeLabel(A_.data.account.area, A_.data.account.dis) : ''],
     rep: [D.repName || '', (() => { const r = (D.data?.reps || []).find(x => x.name === D.repName); return r ? roleText(r) : ''; })()],
     me: [t('navMe'), state.user.name]
   }[state.view] || ['CareHub', ''];
@@ -984,7 +1007,7 @@ function renderHome() {
     </div>
     <button class="action" data-go="visit"><span class="ic"><svg><use href="#i-pin"/></svg></span>
       <span><b>${esc(t('logT'))}</b><small>${esc(t('logX'))}</small></span><span class="go flip">›</span></button>
-    ${isSupervisor() ? `<button class="action alt" data-go="dash" style="background:var(--surface);color:var(--ink);box-shadow:none;border:1px solid var(--line);margin-top:12px"><span class="ic"><svg><use href="#i-chart"/></svg></span><span><b>${esc(t('myTeamT'))}</b><small>${esc(t('myTeamX'))}</small></span><span class="go flip">›</span></button>` : ''}
+    <button class="action alt" data-go="dash" style="background:var(--surface);color:var(--ink);box-shadow:none;border:1px solid var(--line);margin-top:12px"><span class="ic"><svg><use href="#i-chart"/></svg></span><span><b>${esc(t(isSupervisor() ? 'myTeamT' : 'myStatsT'))}</b><small>${esc(t(isSupervisor() ? 'myTeamX' : 'myStatsX'))}</small></span><span class="go flip">›</span></button>
     ${gapText() ? `<div class="gapnote" style="margin-top:12px">${esc(gapText())}</div>` : ''}
     <div class="sechead"><h2>${esc(t('myToday'))}</h2>${h && h.visits.length ? `<span>${esc(t('visitsN', { n: h.visits.length }))}</span>` : ''}</div>
     ${list}`;
@@ -1510,9 +1533,11 @@ function renderDash() {
     <div class="row2">
       ${isAll ? `<div><label for="dCh">${esc(t('channel'))}</label><select id="dCh"><option value="">${esc(t('allChannels'))}</option>${Object.keys(CH).map(k => `<option value="${k}" ${D.channel === k ? 'selected' : ''}>${esc(chLabel(k))}</option>`).join('')}</select></div>` : ''}
       ${isManager() && supervisors().length ? `<div><label for="dTeam">${esc(t('team'))}</label><select id="dTeam"><option value="">${esc(t('allTeams'))}</option>${supervisors().map(n => `<option ${D.team === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></div>` : ''}
-      <div><label for="dRep">${esc(t('rep'))}</label><select id="dRep"><option value="">${esc(t('allReps'))}</option>${repNames().filter(inTeamFilter).map(n => `<option ${D.rep === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></div>
+      ${isSelf() ? '' : `<div><label for="dRep">${esc(t('rep'))}</label><select id="dRep"><option value="">${esc(t('allReps'))}</option>${repNames().filter(inTeamFilter).map(n => `<option ${D.rep === n ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></div>`}
     </div>`;
-  $('dTabs').innerHTML = ['overview', 'team', 'accounts', 'visits'].map(k => `<button data-dtab="${k}" aria-pressed="${D.tab === k}">${esc(t('t_' + k))}</button>`).join('');
+  const tabs = isSelf() ? ['overview', 'accounts', 'visits'] : ['overview', 'team', 'accounts', 'visits'];
+  if (!tabs.includes(D.tab)) D.tab = 'overview';
+  $('dTabs').innerHTML = tabs.map(k => `<button data-dtab="${k}" aria-pressed="${D.tab === k}">${esc(t('t_' + k))}</button>`).join('');
 
   const body = $('dBody');
   if (D.loading) { body.innerHTML = `<div class="dash-loading"><span class="spin dark"></span>${esc(t('loadingDash'))}</div>`; return; }
@@ -1533,14 +1558,14 @@ function dashOverview(V) {
   let html = `<div class="kpis">
     ${kpi(t('kVisits'), fmtN(total), t('inPeriod'), 'hl')}
     ${kpi(t('kAvgDay'), repDays ? (total / repDays).toFixed(1) : '0')}
-    ${D.rep ? kpi(t('kActiveDays'), fmtN(new Set(V.map(v => v.d)).size)) : kpi(t('kActiveReps'), fmtN(repsActive), repsAll ? t('ofN', { n: repsAll }) : '')}
+    ${D.rep || isSelf() ? kpi(t('kActiveDays'), fmtN(new Set(V.map(v => v.d)).size)) : kpi(t('kActiveReps'), fmtN(repsActive), repsAll ? t('ofN', { n: repsAll }) : '')}
     ${kpi(t('kAccVisited'), fmtN(new Set(V.map(v => v.acc)).size))}
     ${kpi(t('kNewAcc'), fmtN(V.filter(v => v.st === 'NEW_ACCOUNT').length))}
     ${kpi(t('kFlagged'), fmtN(flagged), t('ofVisits', { p: pct(flagged, total) }), flagged ? 'warnk' : '')}
   </div>`;
   if (!total) return html + card(t('sDaily'), emptyMsg());
   html += trendChart(V, data.from, data.to);
-  if (data.scope.length > 1) html += card(t('sByChannel'), barsH(countBy(V, v => v.ch), chLabel, k => CH[k]?.color || 'var(--sand)'));
+  if (data.scope.length > 1 && !isSelf()) html += card(t('sByChannel'), barsH(countBy(V, v => v.ch), chLabel, k => CH[k]?.color || 'var(--sand)'));
   html += gpsStack(V);
   html += card(t('sAreas'), barsH(countBy(V, v => v.area).slice(0, 6), labelOfListValue));
   html += card(t('sDistricts'), barsH(countBy(V, v => v.dis ? v.area + '||' + v.dis : '').slice(0, 8), k => { const [a, d] = k.split('||'); return placeLabel(a, d); }));
@@ -1598,14 +1623,77 @@ function dashAccounts(V) {
   </div>`;
   const most = countBy(V, v => v.acc).slice(0, 10);
   const nameOf = id => (A.find(a => a.id === id) || V.find(v => v.acc === id) || {}).name || (V.find(v => v.acc === id) || {}).an || id;
+  html += card(t(isSelf() ? 'sMyAccounts' : 'sAllAccounts'),
+    `<input type="search" class="searchbox" id="aSearch" value="${esc(D.accSearch || '')}" placeholder="${esc(t('searchAccounts'))}"><div id="aList">${accountList()}</div>`);
   html += card(t('sMostVisited'), barsH(most, nameOf));
   html += card(t('sAccByArea'), barsH(countBy(A, a => a.area).slice(0, 8), labelOfListValue));
   html += card(t('sAccByCat'), barsH(countBy(A, a => a.cat).slice(0, 8), labelOfListValue));
-  html += card(t('sAttention'), stale.length ? `<div>${stale.slice(0, 20).map(a => `<div class="vrow" style="cursor:default">
-      <span class="dot" style="background:${CH[a.ch]?.color}"></span>
-      <span class="mn"><b>${esc(a.name)}</b><span class="sub">${esc(labelOfListValue(a.cat))} – ${esc(labelOfListValue(a.area))}</span></span>
-      <span class="when">${esc(t('lastVisit'))}<br><b>${a.last ? esc(fmtDay(a.last)) : esc(t('never'))}</b></span></div>`).join('')}</div>` : emptyMsg(), stale.length > 20 ? t('showingLatest', { n: 20, total: stale.length }) : '');
+  html += card(t('sAttention'), stale.length ? `<div>${stale.slice(0, 20).map(accRow).join('')}</div>` : emptyMsg(), stale.length > 20 ? t('showingLatest', { n: 20, total: stale.length }) : '');
   return html;
+}
+
+function accRow(a) {
+  return `<button class="vrow" data-acc="${esc(a.id)}"><span class="dot" style="background:${CH[a.ch]?.color}"></span>
+    <span class="mn"><b>${esc(a.name)}</b><span class="sub">${esc(labelOfListValue(a.cat))} – ${esc(placeLabel(a.area, a.dis))}</span></span>
+    <span class="when">${esc(t('visitsN', { n: a.cnt }))}<br><b>${a.last ? esc(fmtDay(a.last)) : esc(t('never'))}</b></span></button>`;
+}
+function accountList() {
+  const q = norm(D.accSearch || '');
+  const list = D.data.accounts.filter(a => !q || norm(a.name + ' ' + a.area + ' ' + (a.areaAr || '') + ' ' + a.dis + ' ' + labelOfListValue(a.cat)).includes(q))
+    .sort((x, y) => (y.last || '').localeCompare(x.last || '') || x.name.localeCompare(y.name));
+  if (!list.length) return emptyMsg();
+  return list.slice(0, 60).map(accRow).join('') + (list.length > 60 ? `<p class="note">${esc(t('showingLatest', { n: 60, total: list.length }))}</p>` : '');
+}
+
+/* ---- Account detail: everything about one doctor / company / place ---- */
+const A_ = { id:null, data:null, err:null, from:'dash' };
+async function openAccount(id) {
+  A_.id = id; A_.data = null; A_.err = null; A_.from = state.view === 'acc' ? A_.from : state.view;
+  closeSheet(); go('acc');
+  try { A_.data = await api('account', { id }); learnNames([A_.data.account]); learnNames(A_.data.visits); }
+  catch (e) { A_.err = e.message; }
+  if (state.view === 'acc' && A_.id === id) { renderBar(); renderAccount(); }
+}
+function renderAccount() {
+  const el = $('vAcc');
+  if (A_.err) { el.innerHTML = `<div class="card"><p class="msg">${esc(A_.err)}</p></div>`; return; }
+  if (!A_.data) { el.innerHTML = `<div class="dash-loading"><span class="spin dark"></span>${esc(t('loading'))}</div>`; return; }
+  const a = A_.data.account, V = A_.data.visits;
+  const lastD = V[0]?.d, firstD = V[V.length - 1]?.d;
+  const since = lastD ? Math.round((new Date(todayStr() + 'T12:00:00Z') - new Date(lastD + 'T12:00:00Z')) / 86400000) : null;
+  const row = (k, val) => val ? `<dt>${esc(t(k))}</dt><dd>${val}</dd>` : '';
+  let html = `<section class="card acc-head">
+      <span class="avatar" style="--c:${CH[a.ch]?.color || 'var(--navy)'}">${esc(initials(a.name))}</span>
+      <div><h3 style="margin:0">${esc(a.name)}</h3><span class="sub">${esc(labelOfListValue(a.cat))} – ${esc(chLabel(a.ch))}</span></div>
+    </section>
+    <div class="kpis">
+      ${kpi(t('kVisits'), fmtN(V.length), isSelf() ? t('byYou') : '', 'hl')}
+      ${kpi(t('lastVisit'), lastD ? esc(fmtDay(lastD)) : esc(t('never')), since != null ? t('daysAgo', { n: since }) : '', since != null && since > 30 ? 'warnk' : '')}
+      ${kpi(t('firstVisit'), firstD ? esc(fmtDay(firstD)) : '—')}
+      ${kpi(t('kFlagged'), fmtN(V.filter(v => v.fl).length), '', V.some(v => v.fl) ? 'warnk' : '')}
+    </div>
+    <section class="card"><h3>${esc(t('accInfo'))}</h3><dl class="dl" style="margin:0">
+      ${row('dArea', esc(placeLabel(a.area, a.dis)))}${row('dAddress', esc(a.address))}
+      ${row('dContact', esc([a.cp, a.role].filter(Boolean).join(' – ')))}
+      ${row('phone', a.phone ? `<a href="tel:${esc(a.phone)}" dir="ltr">${esc(a.phone)}</a>` : '')}
+      ${row('addedBy', esc([a.by, a.created ? fmtDay(a.created) : ''].filter(Boolean).join(' – ')))}
+    </dl>
+    ${a.lat != null ? `<div style="height:12px"></div><a class="btn sand" href="https://maps.google.com/?q=${a.lat},${a.lng}" target="_blank" rel="noopener">${esc(t('openMap'))}</a>` : ''}
+    </section>`;
+  if (V.length) html += card(t('sOutcome'), barsH(countBy(V, v => v.out), lbl));
+  html += card(t('sHistory'), V.length ? `<ol class="timeline hist">${V.map(v => {
+      const col = ST_COLOR[v.st] || 'var(--muted)';
+      const bits = [v.pur && lbl(v.pur), v.out && lbl(v.out)].filter(Boolean).map(esc).join(' – ');
+      return `<li><time>${esc(fmtDay(v.d))}<br>${esc(v.t)}</time><span class="tl-dot" style="--c:${col}"></span>
+        <button class="tl-card" data-visit="${esc(v.id)}">
+          <b>${bits || esc(t('visit'))}${v.fl ? ' <span class="flagmark">!</span>' : ''}</b>
+          ${isSelf() ? '' : `<span class="sub">${esc(v.rep)}</span>`}
+          ${v.notes ? `<p class="note-txt">${esc(v.notes)}</p>` : ''}
+          ${v.prod ? `<span class="sub">${esc(t('dProducts'))}: ${esc(v.prod.split(/\s*,\s*/).map(labelOfListValue).join(lang === 'ar' ? '، ' : ', '))}</span><br>` : ''}
+          ${v.na || v.nd ? `<span class="next">↳ ${esc(v.na || t('dNext'))}${v.nd ? ' – ' + esc(fmtDay(v.nd)) : ''}</span>` : ''}
+        </button></li>`;
+    }).join('')}</ol>` : emptyMsg());
+  el.innerHTML = html;
 }
 
 /* ---- Visits ---- */
@@ -1683,7 +1771,7 @@ function renderRep() {
 
 /* ---- Visit detail sheet ---- */
 function openVisitDetail(id) {
-  const v = D.data?.visits.find(x => x.id === id); if (!v) return;
+  const v = D.data?.visits.find(x => x.id === id) || A_.data?.visits.find(x => x.id === id); if (!v) return;
   const row = (k, val) => val === '' || val == null ? '' : `<dt>${esc(t(k))}</dt><dd>${val}</dd>`;
   const flags = v.fl ? esc(v.fl).split(' | ').join('<br>') : '';
   $('sheet').dataset.visit = id;
@@ -1702,6 +1790,7 @@ function openVisitDetail(id) {
       ${row('dFlags', flags)}
     </dl>
     ${v.lat != null ? `<a class="btn sand" href="https://maps.google.com/?q=${v.lat},${v.lng}" target="_blank" rel="noopener">${esc(t('openMap'))}</a><div style="height:10px"></div>` : ''}
+    ${state.view !== 'acc' ? `<button class="btn" data-acc="${esc(v.acc)}">${esc(t('openAccount'))}</button><div style="height:10px"></div>` : ''}
     <button class="btn ghost" data-close style="--accent:var(--navy)">${esc(t('close'))}</button>`;
   $('sheetWrap').hidden = false;
 }
@@ -1711,13 +1800,14 @@ function closeSheet() { $('sheetWrap').hidden = true; delete $('sheet').dataset.
    EVENTS
    ===================================================================== */
 document.addEventListener('click', e => {
-  const el = e.target.closest('[data-go],[data-period],[data-dtab],[data-rep],[data-visit],[data-lang],[data-lang-toggle],[data-close],#btnRefresh,#btnLogout,#dRetry');
+  const el = e.target.closest('[data-go],[data-period],[data-dtab],[data-rep],[data-visit],[data-acc],[data-lang],[data-lang-toggle],[data-close],#btnRefresh,#btnLogout,#dRetry');
   if (!el) { if (e.target === $('sheetWrap')) closeSheet(); return; }
   if (el.dataset.go) return go(el.dataset.go);
   if (el.dataset.period) { D.period = el.dataset.period; if (D.period === 'custom' && !D.from) { [D.from, D.to] = [addDays(todayStr(), -29), todayStr()]; } return loadDash(); }
   if (el.dataset.dtab) { D.tab = el.dataset.dtab; renderDash(); return; }
   if (el.dataset.rep) return openRep(el.dataset.rep);
   if (el.dataset.visit) return openVisitDetail(el.dataset.visit);
+  if (el.dataset.acc) return openAccount(el.dataset.acc);
   if (el.dataset.lang) return setLang(el.dataset.lang);
   if (el.hasAttribute('data-lang-toggle')) return setLang(lang === 'ar' ? 'en' : 'ar');
   if (el.hasAttribute('data-close')) return closeSheet();
@@ -1733,6 +1823,7 @@ document.addEventListener('change', e => {
   if (id === 'dFrom' || id === 'dTo') { if (id === 'dFrom') D.from = e.target.value; else D.to = e.target.value; if (D.from && D.to) loadDash(); }
 });
 document.addEventListener('input', e => {
+  if (e.target.id === 'aSearch') { D.accSearch = e.target.value; $('aList').innerHTML = accountList(); return; }
   if (e.target.id === 'dSearch') { D.search = e.target.value; const V = filteredVisits(); $('dLog').innerHTML = visitLog(V); }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('sheetWrap').hidden) closeSheet(); });
@@ -1745,7 +1836,7 @@ $('btnLogin').onclick = () => {
 $('loginPin').addEventListener('keydown', e => { if (e.key === 'Enter') $('btnLogin').click(); });
 $('btnEye').onclick = () => { const p = $('loginPin'); const show = p.type === 'password'; p.type = show ? 'text' : 'password'; $('btnEye').dataset.i18n = show ? 'hide' : 'show'; $('btnEye').textContent = t($('btnEye').dataset.i18n); };
 $('loginName').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginPin').focus(); });
-$('btnBack').onclick = () => go(state.view === 'rep' || isManager() ? 'dash' : 'home');
+$('btnBack').onclick = () => go(state.view === 'acc' ? (A_.from || 'dash') : (state.view === 'rep' || isManager() ? 'dash' : 'home'));
 $('btnAnother').onclick = () => go('visit');
 $('modeExisting').onclick = () => setMode('existing');
 $('modeNew').onclick = () => setMode('new');
